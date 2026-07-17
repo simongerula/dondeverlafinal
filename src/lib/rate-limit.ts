@@ -1,28 +1,47 @@
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+interface RateLimitEntry {
+  timestamps: number[];
+}
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const store = new Map<string, RateLimitEntry>();
 
-export const venueCreateLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(5, "60 s"),
-  analytics: true,
-  prefix: "rl:venue:create",
-});
+function cleanup(key: string, windowMs: number) {
+  const entry = store.get(key);
+  if (!entry) return;
+  const cutoff = Date.now() - windowMs;
+  entry.timestamps = entry.timestamps.filter((t) => t > cutoff);
+  if (entry.timestamps.length === 0) store.delete(key);
+}
 
-export const venueNearbyLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(30, "60 s"),
-  analytics: true,
-  prefix: "rl:venue:nearby",
-});
+export function checkRateLimit(
+  key: string,
+  maxRequests: number,
+  windowMs: number,
+): { success: boolean; remaining: number; reset: number } {
+  let entry = store.get(key);
+  if (!entry) {
+    entry = { timestamps: [] };
+    store.set(key, entry);
+  }
 
-export const pageviewLimiter = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(10, "60 s"),
-  analytics: true,
-  prefix: "rl:pageview",
-});
+  const now = Date.now();
+  const cutoff = now - windowMs;
+  entry.timestamps = entry.timestamps.filter((t) => t > cutoff);
+
+  const remaining = Math.max(0, maxRequests - entry.timestamps.length);
+  const reset = entry.timestamps.length > 0
+    ? entry.timestamps[0] + windowMs
+    : now + windowMs;
+
+  if (entry.timestamps.length >= maxRequests) {
+    return { success: false, remaining: 0, reset };
+  }
+
+  entry.timestamps.push(now);
+  return { success: true, remaining: remaining - 1, reset };
+}
+
+setInterval(() => {
+  for (const key of store.keys()) {
+    cleanup(key, 60_000);
+  }
+}, 60_000);

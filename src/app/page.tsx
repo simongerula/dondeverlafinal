@@ -28,6 +28,7 @@ export default function Home() {
   const [loadingVenues, setLoadingVenues] = useState(true);
   const [radius, setRadius] = useState<number>(50);
   const [mapZoom, setMapZoom] = useState<number | undefined>(undefined);
+  const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -70,6 +71,11 @@ export default function Home() {
         signal: controller.signal,
       });
       if (!res.ok) {
+        if (res.status === 429) {
+          const body = await res.json().catch(() => null);
+          setRateLimitMsg(body?.error ?? "Demasiadas requests");
+          setTimeout(() => setRateLimitMsg(null), 5000);
+        }
         setVenues(MOCK_VENUES);
       } else {
         const data = await res.json();
@@ -203,6 +209,12 @@ export default function Home() {
       {/* Top/left: map + search */}
       <div className="relative h-[40vh] lg:h-full lg:w-3/5 lg:max-w-none shrink-0">
         <MapView center={center} zoom={mapZoom} venues={venues} onCenterChange={setCenter} onVenueClick={scrollToVenue} />
+
+        {rateLimitMsg && (
+          <div className="absolute bottom-4 left-3 right-3 z-[1000] bg-yellow-400/90 backdrop-blur-md text-[#0a2540] text-sm font-semibold text-center rounded-xl px-4 py-3 shadow-lg">
+            {rateLimitMsg}
+          </div>
+        )}
 
         {/* Search bar overlay — glassmorphism */}
         <div className="absolute top-0 left-0 right-0 p-3 z-[1000]">
