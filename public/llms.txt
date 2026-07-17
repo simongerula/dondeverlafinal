@@ -1,0 +1,37 @@
+# Dónde Ver La Final
+
+> App gratuita para encontrar dónde ver la final del Mundial FIFA 2026 en cualquier parte del mundo. Mapa interactivo con bares, pubs, restaurantes y locales que transmiten el partido. Los usuarios suman y comparten lugares para ver la final.
+
+La final de la Copa del Mundo FIFA 2026 se juega el 19 de julio de 2026. Esta app ayuda a encontrar pubs, bares, restaurantes y cualquier local que transmita el partido, en Argentina y en todo el mundo. Cualquier persona puede sumar un lugar y compartirlo con la comunidad.
+
+## Cómo funciona
+
+1. Abrí la app y permití la ubicación (o buscá tu ciudad).
+2. El mapa muestra los lugares cercanos que transmiten la final.
+3. Hacé click en un lugar para ver detalles: dirección, precio, si requiere reserva.
+4. ¿Tenés data de algún local? Sumalo con el botón "¿Tenés data?".
+
+## Tipo de contenido
+
+- Mapa interactivo con ubicaciones de locales para ver el Mundial 2026
+- Lista de bares, pubs, restaurantes y locales por ciudad
+- Información de cada lugar: nombre, dirección, precio, si requiere reserva
+- Búsqueda por ciudad o barrio
+- Conteo regresivo para la final
+
+## Evento
+
+- **Evento:** Final de la Copa del Mundo FIFA 2026
+- **Fecha:** 19 de julio de 2026, 16:00 hora local (UTC-3)
+- **Sede:** MetLife Stadium, Nueva Jersey, EE.UU.
+- **Formato:** Crowdsourced — los usuarios suman los lugares
+
+## Áreas de cobertura
+
+Principalmente Argentina, pero la app funciona en todo el mundo. Cualquier persona puede sumar locales de cualquier país.
+
+## Contacto
+
+- Web: https://dondeveolafinal.vercel.app
+- Lugares: https://dondeveolafinal.vercel.app/lugares
+- La app es de código abierto y colaborativa.
