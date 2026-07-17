@@ -93,17 +93,20 @@ export default function Home() {
     (v) => distanceKm(center, { lat: v.lat, lng: v.lng }) <= radius
   );
 
-  // Record page view once per session.
-  useEffect(() => {
-    if (!sessionStorage.getItem("pageview_recorded")) {
-      fetch("/api/pageview", { method: "POST" });
-      sessionStorage.setItem("pageview_recorded", "1");
-    }
-  }, []);
-
-  // Run once on mount: load venues and grab geolocation.
+  // Run once on mount: grab geolocation, record page view (with location), and load venues.
   useEffect(() => {
     loadVenues();
+
+    const recordPageView = (loc?: { lat: number; lng: number }) => {
+      if (sessionStorage.getItem("pageview_recorded")) return;
+      fetch("/api/pageview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(loc ?? {}),
+      });
+      sessionStorage.setItem("pageview_recorded", "1");
+    };
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -113,12 +116,16 @@ export default function Home() {
           };
           setUserLoc(loc);
           setCenter(loc);
+          recordPageView(loc);
         },
         () => {
-          /* user denied or unavailable — keep default center */
+          recordPageView();
         }
       );
+    } else {
+      recordPageView();
     }
+
     return () => abortRef.current?.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

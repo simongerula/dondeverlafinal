@@ -1,8 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 
-export async function POST() {
-  const { error } = await getSupabase().from("page_views").insert({});
+export async function POST(req: NextRequest) {
+  let lat: number | null = null;
+  let lng: number | null = null;
+
+  try {
+    const body = await req.json();
+    if (typeof body.lat === "number" && typeof body.lng === "number") {
+      lat = body.lat;
+      lng = body.lng;
+    }
+  } catch {
+    // body may be empty — that's fine
+  }
+
+  const { error } = await getSupabase().from("page_views").insert({ lat, lng });
 
   if (error) {
     console.error("Failed to record page view:", error.message);
