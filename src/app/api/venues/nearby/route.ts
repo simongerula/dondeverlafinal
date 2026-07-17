@@ -5,7 +5,7 @@ import { z } from "zod";
 const nearbySchema = z.object({
   p_lat: z.number().min(-90).max(90),
   p_lng: z.number().min(-180).max(180),
-  p_radius_m: z.number().min(1).max(50000),
+  p_radius_m: z.number().positive(),
 });
 
 export async function POST(request: Request) {
