@@ -88,7 +88,11 @@ export async function POST(request: Request) {
   });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Failed to create venue:", error.message);
+    return NextResponse.json(
+      { error: "Failed to create venue" },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ ok: true });
