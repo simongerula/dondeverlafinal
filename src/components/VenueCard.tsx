@@ -16,13 +16,14 @@ export default function VenueCard({
     ? formatDistance(distanceKm(userLoc, { lat: venue.lat, lng: venue.lng }))
     : null;
   const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
   return (
     <div className="snap-center shrink-0 w-[260px] lg:w-full h-[240px] bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group flex flex-col">
-      <div className="h-30 bg-sky-900/40 relative overflow-hidden">
+      <div className="h-30 bg-sky-900/40 relative overflow-hidden cursor-pointer" onClick={() => setShowImageModal(true)}>
         {venue.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -113,8 +114,8 @@ export default function VenueCard({
               <div>
                 <h3 className="font-bold text-white">Salir de la página</h3>
                 <p className="text-sm text-slate-300 mt-0.5">
-                  Vas a ser redirigido a la página de la publicación. No tenemos
-                  control sobre el contenido externo.
+                  Vas a ser redirigido a la página de la publicación. Si bien
+                  validamos el link, no tenemos control sobre el contenido externo.
                 </p>
               </div>
             </div>
@@ -140,6 +141,36 @@ export default function VenueCard({
             </div>
           </div>
         </div>,
+            document.body
+          )
+        : null}
+
+      {mounted && showImageModal
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[2000] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-overlay"
+              onClick={() => setShowImageModal(false)}
+            >
+              <div
+                className="relative max-w-2xl max-h-[90vh] w-full"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setShowImageModal(false)}
+                  className="absolute -top-10 right-0 text-white/70 hover:text-white transition"
+                >
+                  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={venue.photo_url || "/images/default-image.jpg"}
+                  alt={venue.name}
+                  className="w-full h-full object-contain rounded-2xl"
+                />
+              </div>
+            </div>,
             document.body
           )
         : null}
