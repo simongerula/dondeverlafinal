@@ -28,6 +28,7 @@ export default function Home() {
   const [radius, setRadius] = useState<number>(50);
   const [mapZoom, setMapZoom] = useState<number | undefined>(undefined);
   const [rateLimitMsg, setRateLimitMsg] = useState<string | null>(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -50,6 +51,12 @@ export default function Home() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (!localStorage.getItem("welcome_modal_seen")) {
+      setShowWelcomeModal(true);
+    }
   }, []);
 
   const loadVenues = useCallback(async () => {
@@ -345,6 +352,36 @@ export default function Home() {
               className="mt-2 w-full rounded-xl py-2.5 text-sm font-semibold text-[#0a2540] bg-yellow-400 hover:bg-yellow-300 transition"
             >
               ¡Perfecto!
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showWelcomeModal && (
+        <div
+          className="fixed inset-0 z-[2000] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-overlay"
+          onClick={() => {
+            localStorage.setItem("welcome_modal_seen", "1");
+            setShowWelcomeModal(false);
+          }}
+        >
+          <div
+            className="bg-[#0a2540] w-full max-w-sm rounded-3xl p-6 shadow-2xl ring-1 ring-sky-900/60 animate-sheet flex flex-col items-center gap-4 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src="https://scontent.fwlg3-2.fna.fbcdn.net/v/t39.30808-6/749076836_4581052322140297_8856807534170735628_n.jpg?stp=dst-jpg_tt6&cstp=mx572x1024&ctp=s572x1024&_nc_cat=111&ccb=1-7&_nc_sid=aa7b47&_nc_ohc=XQSbq-WgxqIQ7kNvwG05gaa&_nc_oc=Adoywai7doW2nWuN1wGuO4iElc-qDQ1pRq2_dPf-xr3nFr6_36u3u-ZNL0jL9s5svkcVv0I-Mp1nRR15TqBHjxJu&_nc_zt=23&_nc_ht=scontent.fwlg3-2.fna&_nc_gid=XHa7teIOdvLI5Kdfc7TobA&_nc_ss=7b2a8&oh=00_AQBqyYzl1x-TD1Yge5JgVMXOdMUV9fc4HovqgsRGyVHsDQ&oe=6A60859C"
+              alt="Bienvenido"
+              className="w-full max-h-[60vh] object-contain rounded-2xl"
+            />
+            <button
+              onClick={() => {
+                localStorage.setItem("welcome_modal_seen", "1");
+                setShowWelcomeModal(false);
+              }}
+              className="mt-2 w-full rounded-xl py-2.5 text-sm font-semibold text-[#0a2540] bg-yellow-400 hover:bg-yellow-300 transition"
+            >
+              ¡Vamos Argentina!
             </button>
           </div>
         </div>
