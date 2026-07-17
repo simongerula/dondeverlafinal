@@ -213,7 +213,12 @@ export default function Home() {
     <div className="flex flex-col h-[100dvh] lg:h-screen w-full bg-[#0b1a2e] text-slate-100">
       <header className="flex items-center justify-center px-4 py-3 bg-[#0a2540] border-b border-sky-900/60">
         <div className="flex items-center gap-2 text-base font-bold text-yellow-400">
-          <img src="/images/peepoArgentina.gif" alt="" className="w-7 h-7 object-contain" />
+          <img
+            src="/images/peepoArgentina.gif"
+            alt=""
+            className="w-7 h-7 object-contain cursor-pointer"
+            onClick={() => setShowWelcomeModal(true)}
+          />
           Faltan: <span className="tabular-nums">{countdown}</span>
         </div>
       </header>
