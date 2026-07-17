@@ -28,6 +28,7 @@ export default function Home() {
   const [loadingVenues, setLoadingVenues] = useState(true);
   const [radius, setRadius] = useState<number>(50);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const TARGET = new Date("2026-07-19T19:00:00Z");
   const [countdown, setCountdown] = useState<string>("");
@@ -51,6 +52,10 @@ export default function Home() {
   }, []);
 
   const loadVenues = useCallback(async () => {
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoadingVenues(true);
     try {
       const res = await fetch("/api/venues/nearby", {
@@ -61,6 +66,7 @@ export default function Home() {
           p_lng: center.lng,
           p_radius_m: radius * 1000,
         }),
+        signal: controller.signal,
       });
       if (!res.ok) {
         setVenues(MOCK_VENUES);
@@ -69,9 +75,11 @@ export default function Home() {
         setVenues((data as Venue[]) ?? []);
       }
     } catch {
+      if (controller.signal.aborted) return;
       setVenues(MOCK_VENUES);
+    } finally {
+      if (!controller.signal.aborted) setLoadingVenues(false);
     }
-    setLoadingVenues(false);
   }, [center, radius]);
 
   const filteredVenues = venues.filter(
@@ -96,6 +104,7 @@ export default function Home() {
         }
       );
     }
+    return () => abortRef.current?.abort();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -252,7 +261,7 @@ export default function Home() {
           ) : filteredVenues.length === 0 ? (
             <p className="text-sm text-slate-400">
               {venues.length === 0
-                ? "Todavía no hay lugares aprobados. ¡Sumá el primero!"
+                ? "Todavía no hay lugares en el area. ¡Sumá el primero!"
                 : "No hay lugares en ese rango. Probá ampliarlo."}
             </p>
           ) : (
