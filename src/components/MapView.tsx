@@ -23,6 +23,7 @@ export default function MapView({
   const markersRef = useRef<L.Marker[]>([]);
   const prevCenter = useRef(center);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isFlyingRef = useRef(false);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -36,11 +37,15 @@ export default function MapView({
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         subdomains: "abcd",
         maxZoom: 19,
-      }
+      },
     ).addTo(map);
     mapRef.current = map;
 
     map.on("moveend", () => {
+      if (isFlyingRef.current) {
+        isFlyingRef.current = false;
+        return;
+      }
       if (!onCenterChange) return;
       if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = setTimeout(() => {
@@ -67,7 +72,10 @@ export default function MapView({
       return;
     }
     prevCenter.current = center;
-    map.flyTo([center.lat, center.lng], zoom ?? map.getZoom(), { duration: 0.6 });
+    isFlyingRef.current = true;
+    map.flyTo([center.lat, center.lng], zoom ?? map.getZoom(), {
+      duration: 0.6,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center]);
 

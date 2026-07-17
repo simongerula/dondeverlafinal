@@ -93,10 +93,9 @@ export default function Home() {
     (v) => distanceKm(center, { lat: v.lat, lng: v.lng }) <= radius
   );
 
-  // Run once on mount: grab geolocation, record page view (with location), and load venues.
+  // Run once on mount: grab geolocation and record page view (with location).
+  // Venue loading is handled by the [loadVenues] effect below.
   useEffect(() => {
-    loadVenues();
-
     const recordPageView = (loc?: { lat: number; lng: number }) => {
       if (sessionStorage.getItem("pageview_recorded")) return;
       fetch("/api/pageview", {
@@ -126,7 +125,7 @@ export default function Home() {
       recordPageView();
     }
 
-    return () => abortRef.current?.abort();
+    return () => {};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
