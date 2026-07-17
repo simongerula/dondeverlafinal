@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
-import { MOCK_VENUES } from "@/lib/mockVenues";
 import { distanceKm } from "@/lib/geo";
 import type { Venue } from "@/lib/types";
 import VenueCard from "@/components/VenueCard";
@@ -76,14 +75,14 @@ export default function Home() {
           setRateLimitMsg(body?.error ?? "Demasiadas requests");
           setTimeout(() => setRateLimitMsg(null), 5000);
         }
-        setVenues(MOCK_VENUES);
+        setVenues([]);
       } else {
         const data = await res.json();
         setVenues((data as Venue[]) ?? []);
       }
     } catch {
       if (controller.signal.aborted) return;
-      setVenues(MOCK_VENUES);
+      setVenues([]);
     } finally {
       if (!controller.signal.aborted) setLoadingVenues(false);
     }
