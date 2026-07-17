@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { getSupabase } from "@/lib/supabase";
 
 type AddressSuggestion = { display_name: string; lat: string; lon: string };
 
@@ -80,32 +79,33 @@ export default function AddVenueForm({
     setSubmitting(true);
     setError(null);
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!supabaseUrl || supabaseUrl.includes("YOUR_PROJECT")) {
+    try {
+      const res = await fetch("/api/venues", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          description: description.trim() || null,
+          address: address.trim() || null,
+          lat: finalLoc.lat,
+          lng: finalLoc.lng,
+          photo_url: photoUrl.trim() || null,
+          link: link.trim() || null,
+          price: price === "" ? null : Number(price),
+          requires_booking: requiresBooking,
+        }),
+      });
+
       setSubmitting(false);
+      if (!res.ok) {
+        setError("No se pudo enviar. Intentá de nuevo.");
+        return;
+      }
       onAdded();
-      return;
-    }
-
-    const { error } = await getSupabase().from("venues").insert({
-      name: name.trim(),
-      description: description.trim() || null,
-      address: address.trim() || null,
-      lat: finalLoc.lat,
-      lng: finalLoc.lng,
-      photo_url: photoUrl.trim() || null,
-      link: link.trim() || null,
-      price: price === "" ? null : Number(price),
-      requires_booking: requiresBooking,
-      status: "pending",
-    });
-
-    setSubmitting(false);
-    if (error) {
+    } catch {
+      setSubmitting(false);
       setError("No se pudo enviar. Intentá de nuevo.");
-      return;
     }
-    onAdded();
   }
 
   return (

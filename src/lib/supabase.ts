@@ -4,11 +4,11 @@ let client: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient {
   if (client) return client;
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_PUBLISHABLE_KEY;
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(
-      "Supabase env vars are missing. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY."
+      "Supabase env vars are missing. Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY."
     );
   }
   client = createClient(supabaseUrl, supabaseAnonKey);

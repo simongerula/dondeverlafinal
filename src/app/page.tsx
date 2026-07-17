@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
-import { getSupabase } from "@/lib/supabase";
 import { MOCK_VENUES } from "@/lib/mockVenues";
 import { distanceKm } from "@/lib/geo";
 import type { Venue } from "@/lib/types";
@@ -53,19 +52,25 @@ export default function Home() {
 
   const loadVenues = useCallback(async () => {
     setLoadingVenues(true);
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!url || url.includes("YOUR_PROJECT")) {
-      // No Supabase configured yet — show mocked venues (filtered client-side).
+    try {
+      const res = await fetch("/api/venues/nearby", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          p_lat: center.lat,
+          p_lng: center.lng,
+          p_radius_m: radius * 1000,
+        }),
+      });
+      if (!res.ok) {
+        setVenues(MOCK_VENUES);
+      } else {
+        const data = await res.json();
+        setVenues((data as Venue[]) ?? []);
+      }
+    } catch {
       setVenues(MOCK_VENUES);
-      setLoadingVenues(false);
-      return;
     }
-    const { data } = await getSupabase().rpc("venues_within_radius", {
-      p_lat: center.lat,
-      p_lng: center.lng,
-      p_radius_m: radius * 1000,
-    });
-    setVenues((data as Venue[]) ?? []);
     setLoadingVenues(false);
   }, [center, radius]);
 
@@ -228,8 +233,8 @@ export default function Home() {
       {/* Bottom/right: carousel */}
       <div className="flex-1 flex flex-col min-h-0 lg:w-2/5 lg:h-full lg:overflow-y-auto border-t lg:border-t-0 lg:border-l border-sky-900/60 bg-[#0b1a2e]">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <h2 className="font-bold text-sky-100 text-lg leading-tight">
-            Dónde ver la final
+          <h2 className="font-extrabold text-sky-100 text-xl tracking-tight">
+            ¿Dónde veo la final?
           </h2>
           <div className="flex items-center gap-2">
             <button
@@ -241,7 +246,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto px-4 pb-4 snap-x snap-mandatory lg:flex-col lg:overflow-x-hidden lg:overflow-y-auto">
+        <div className="flex-1 flex gap-3 overflow-x-auto px-4 pb-4 snap-x snap-mandatory lg:flex-col lg:overflow-x-hidden lg:overflow-y-auto">
           {loadingVenues ? (
             <p className="text-sm text-slate-400">Cargando…</p>
           ) : filteredVenues.length === 0 ? (

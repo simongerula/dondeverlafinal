@@ -21,19 +21,25 @@ export default function VenueCard({
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="snap-center shrink-0 w-[260px] lg:w-full bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group">
-      <div className="h-24 bg-sky-900/40 relative overflow-hidden">
+    <div className="snap-center shrink-0 w-[260px] lg:w-full h-[240px] bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group flex flex-col">
+      <div className="h-30 bg-sky-900/40 relative overflow-hidden">
         {venue.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={venue.photo_url}
             alt={venue.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "/images/default-image.jpg";
+            }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-sky-300 text-sm font-medium">
-            Sin foto
-          </div>
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src="/images/default-image.jpg"
+            alt={venue.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
         )}
         {dist && (
           <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-[#0a2540]/85 backdrop-blur text-sky-100 text-xs font-semibold shadow">
@@ -41,12 +47,12 @@ export default function VenueCard({
           </span>
         )}
       </div>
-      <div className="p-3 flex flex-col gap-1.5">
+      <div className="p-3 flex-1 flex flex-col gap-1.5 min-h-0">
         <h3 className="font-semibold text-white text-base leading-tight">
           {venue.name}
         </h3>
         {venue.description && (
-          <p className="text-sm text-slate-300 line-clamp-2">
+          <p className="text-sm text-slate-300 line-clamp-2 flex-1">
             {venue.description}
           </p>
         )}
@@ -65,7 +71,7 @@ export default function VenueCard({
             <span className="truncate">{venue.address}</span>
           </p>
         )}
-        <div className="flex flex-wrap items-center gap-2 mt-1 text-xs">
+        <div className="flex flex-wrap items-center gap-2 mt-auto text-xs">
           <span
             className={`px-2.5 py-0.5 rounded-full font-semibold ${
               venue.price == null
