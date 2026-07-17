@@ -22,7 +22,7 @@ export default function VenueCard({
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="snap-center shrink-0 w-[260px] lg:w-full h-[240px] bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group flex flex-col">
+    <div className="snap-center shrink-0 w-[260px] lg:w-full h-[280px] bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group flex flex-col">
       <div className="h-30 bg-sky-900/40 relative overflow-hidden cursor-pointer" onClick={() => setShowImageModal(true)}>
         {venue.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -53,7 +53,7 @@ export default function VenueCard({
           {venue.name}
         </h3>
         {venue.description && (
-          <p className="text-sm text-slate-300 line-clamp-2 flex-1">
+          <p className="text-sm text-slate-300 line-clamp-1 flex-1">
             {venue.description}
           </p>
         )}
@@ -169,6 +169,11 @@ export default function VenueCard({
                   alt={venue.name}
                   className="w-full h-full object-contain rounded-2xl"
                 />
+                {venue.description && (
+                  <p className="mt-4 text-base text-slate-200 text-center leading-relaxed italic font-mono px-4 pb-1">
+                    {venue.description}
+                  </p>
+                )}
               </div>
             </div>,
             document.body
