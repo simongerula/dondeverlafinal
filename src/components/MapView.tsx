@@ -8,14 +8,19 @@ import type { Venue } from "@/lib/types";
 export default function MapView({
   center,
   venues,
+  onCenterChange,
+  onVenueClick,
 }: {
   center: { lat: number; lng: number };
   venues: Venue[];
+  onCenterChange?: (center: { lat: number; lng: number }) => void;
+  onVenueClick?: (venueId: string) => void;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.Marker[]>([]);
   const prevCenter = useRef(center);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -32,7 +37,18 @@ export default function MapView({
       }
     ).addTo(map);
     mapRef.current = map;
+
+    map.on("moveend", () => {
+      if (!onCenterChange) return;
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
+        const newCenter = map.getCenter();
+        onCenterChange({ lat: newCenter.lat, lng: newCenter.lng });
+      }, 300);
+    });
+
     return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       map.remove();
       mapRef.current = null;
     };
@@ -76,6 +92,9 @@ export default function MapView({
       const marker = L.marker([v.lat, v.lng], { icon: pinIcon })
         .addTo(map)
         .bindPopup(`<strong>${v.name}</strong>`);
+      if (onVenueClick) {
+        marker.on("click", () => onVenueClick(v.id));
+      }
       markersRef.current.push(marker);
     });
   }, [venues]);

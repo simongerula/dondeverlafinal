@@ -170,6 +170,11 @@ export default function Home() {
     );
   }
 
+  function scrollToVenue(venueId: string) {
+    const el = document.getElementById(`venue-${venueId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }
+
   return (
     <div className="flex flex-col h-[100dvh] lg:h-screen w-full bg-[#0b1a2e] text-slate-100">
       <header className="flex items-center justify-center px-4 py-3 bg-[#0a2540] border-b border-sky-900/60">
@@ -181,7 +186,7 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
       {/* Top/left: map + search */}
       <div className="relative h-[40vh] lg:h-full lg:w-3/5 lg:max-w-none shrink-0">
-        <MapView center={center} venues={filteredVenues} />
+        <MapView center={center} venues={filteredVenues} onCenterChange={setCenter} onVenueClick={scrollToVenue} />
 
         {/* Search bar overlay — glassmorphism */}
         <div className="absolute top-0 left-0 right-0 p-3 z-[1000]">
@@ -266,7 +271,7 @@ export default function Home() {
             </p>
           ) : (
             filteredVenues.map((v) => (
-              <div key={v.id} className="lg:snap-start">
+              <div key={v.id} id={`venue-${v.id}`} className="lg:snap-start">
                 <VenueCard venue={v} userLoc={center} />
               </div>
             ))
