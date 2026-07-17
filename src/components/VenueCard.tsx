@@ -21,8 +21,8 @@ export default function VenueCard({
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="snap-center shrink-0 w-[260px] lg:w-full bg-white rounded-2xl shadow-sm hover:shadow-xl shadow-zinc-200/60 ring-1 ring-zinc-100 hover:ring-sky-200 transition-all overflow-hidden group">
-      <div className="h-32 bg-gradient-to-br from-sky-100 to-blue-100 relative overflow-hidden">
+    <div className="snap-center shrink-0 w-[260px] lg:w-full bg-[#0a2540] rounded-2xl shadow-sm hover:shadow-xl ring-1 ring-sky-900/60 hover:ring-sky-500/70 transition-all overflow-hidden group">
+      <div className="h-24 bg-sky-900/40 relative overflow-hidden">
         {venue.photo_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -31,27 +31,27 @@ export default function VenueCard({
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-sky-400 text-sm font-medium">
+          <div className="w-full h-full flex items-center justify-center text-sky-300 text-sm font-medium">
             Sin foto
           </div>
         )}
         {dist && (
-          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/85 backdrop-blur text-zinc-700 text-xs font-semibold shadow">
+          <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-[#0a2540]/85 backdrop-blur text-sky-100 text-xs font-semibold shadow">
             {dist}
           </span>
         )}
       </div>
       <div className="p-3 flex flex-col gap-1.5">
-        <h3 className="font-semibold text-zinc-900 text-base leading-tight">
+        <h3 className="font-semibold text-white text-base leading-tight">
           {venue.name}
         </h3>
         {venue.description && (
-          <p className="text-sm text-zinc-600 line-clamp-2">
+          <p className="text-sm text-slate-300 line-clamp-2">
             {venue.description}
           </p>
         )}
         {venue.address && (
-          <p className="flex items-center gap-1 text-xs text-zinc-500">
+          <p className="flex items-center gap-1 text-xs text-slate-400">
             <svg
               className="w-3.5 h-3.5 shrink-0"
               viewBox="0 0 24 24"
@@ -69,21 +69,21 @@ export default function VenueCard({
           <span
             className={`px-2.5 py-0.5 rounded-full font-semibold ${
               venue.price == null
-                ? "bg-emerald-100 text-emerald-700"
-                : "bg-amber-100 text-amber-700"
+                ? "bg-emerald-500/20 text-emerald-300"
+                : "bg-amber-400/20 text-amber-300"
             }`}
           >
             {venue.price == null ? "Gratis" : `$${venue.price}`}
           </span>
           {venue.requires_booking && (
-            <span className="px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-700 font-semibold">
+            <span className="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-semibold">
               Reserva
             </span>
           )}
           {venue.link && (
             <button
               onClick={() => setShowLinkModal(true)}
-              className="px-2.5 py-0.5 rounded-full bg-zinc-900 text-white font-semibold hover:bg-zinc-700 transition"
+              className="px-2.5 py-0.5 rounded-full bg-yellow-400 text-[#0a2540] font-semibold hover:bg-yellow-300 transition"
             >
               Link del post
             </button>
@@ -94,9 +94,9 @@ export default function VenueCard({
       {mounted && showLinkModal && venue.link && venue.link
         ? createPortal(
             <div className="fixed inset-0 z-[2000] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-overlay">
-              <div className="bg-white w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl animate-sheet">
-            <div className="flex items-start gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+               <div className="bg-[#0a2540] w-full sm:max-w-sm rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl ring-1 ring-sky-900/60 animate-sheet">
+             <div className="flex items-start gap-3 mb-3">
+               <div className="w-10 h-10 rounded-full bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
                 <svg
                   className="w-5 h-5"
                   viewBox="0 0 24 24"
@@ -109,20 +109,20 @@ export default function VenueCard({
                 </svg>
               </div>
               <div>
-                <h3 className="font-bold text-zinc-900">Salir de la página</h3>
-                <p className="text-sm text-zinc-600 mt-0.5">
+                <h3 className="font-bold text-white">Salir de la página</h3>
+                <p className="text-sm text-slate-300 mt-0.5">
                   Vas a ser redirigido a la página de la publicación. No tenemos
                   control sobre el contenido externo.
                 </p>
               </div>
             </div>
-            <p className="text-xs text-zinc-500 break-all bg-zinc-50 rounded-lg px-3 py-2 mb-4">
+            <p className="text-xs text-slate-400 break-all bg-sky-900/40 rounded-lg px-3 py-2 mb-4">
               {venue.link}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => setShowLinkModal(false)}
-                className="flex-1 rounded-xl py-2.5 text-sm font-semibold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 transition"
+                className="flex-1 rounded-xl py-2.5 text-sm font-semibold text-sky-200 bg-sky-900/40 hover:bg-sky-900/70 transition"
               >
                 Cancelar
               </button>
@@ -131,7 +131,7 @@ export default function VenueCard({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setShowLinkModal(false)}
-                className="flex-1 text-center rounded-xl py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-sky-500 to-blue-600 shadow-md shadow-sky-500/30 hover:shadow-lg transition"
+                className="flex-1 text-center rounded-xl py-2.5 text-sm font-semibold text-[#0a2540] bg-yellow-400 shadow-md hover:bg-yellow-300 transition"
               >
                 Ir al link
               </a>

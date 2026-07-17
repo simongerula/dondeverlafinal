@@ -1,88 +1,90 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, useMap, Circle } from "react-leaflet";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { useEffect, useRef } from "react";
 import type { Venue } from "@/lib/types";
-
-const userIcon = L.divIcon({
-  className: "",
-  html: `<div style="width:18px;height:18px;border-radius:50%;background:#2563eb;border:3px solid #fff;box-shadow:0 0 0 2px #2563eb;"></div>`,
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-});
-
-const venueIcon = L.divIcon({
-  className: "",
-  html: `<div style="width:16px;height:16px;border-radius:50%;background:#dc2626;border:3px solid #fff;"></div>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
-});
-
-function FitToRadius({
-  lat,
-  lng,
-  radius,
-}: {
-  lat: number;
-  lng: number;
-  radius: number;
-}) {
-  const map = useMap();
-  const prevRadius = useRef<number | null>(null);
-  useEffect(() => {
-    // Only re-zoom when the user picks a new range, not on pan/center change.
-    if (prevRadius.current === radius) return;
-    prevRadius.current = radius;
-    map.flyToBounds(L.latLng(lat, lng).toBounds(radius * 2), {
-      padding: [20, 20],
-      maxZoom: 13,
-      duration: 0.5,
-    });
-  }, [lat, lng, radius, map]);
-  return null;
-}
 
 export default function MapView({
   center,
   venues,
-  radius,
 }: {
   center: { lat: number; lng: number };
   venues: Venue[];
-  radius: number;
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const markersRef = useRef<L.Marker[]>([]);
+  const prevCenter = useRef(center);
+
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
+    const map = L.map(containerRef.current, {
+      zoomControl: false,
+    }).setView([center.lat, center.lng], 13);
+    L.tileLayer(
+      "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+        subdomains: "abcd",
+        maxZoom: 19,
+      }
+    ).addTo(map);
+    mapRef.current = map;
+    return () => {
+      map.remove();
+      mapRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (
+      prevCenter.current.lat === center.lat &&
+      prevCenter.current.lng === center.lng
+    ) {
+      return;
+    }
+    prevCenter.current = center;
+    map.flyTo([center.lat, center.lng], map.getZoom(), { duration: 0.6 });
+  }, [center]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    markersRef.current.forEach((m) => m.remove());
+    markersRef.current = [];
+
+    const pinIcon = L.divIcon({
+      className: "",
+      html: `<div style="width:28px;height:28px;background:#ffffff;border:3px solid #3b82f6;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      </div>`,
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+      popupAnchor: [0, -30],
+    });
+
+    venues.forEach((v) => {
+      const marker = L.marker([v.lat, v.lng], { icon: pinIcon })
+        .addTo(map)
+        .bindPopup(`<strong>${v.name}</strong>`);
+      markersRef.current.push(marker);
+    });
+  }, [venues]);
+
   return (
-    <MapContainer
-      center={[center.lat, center.lng]}
-      zoom={13}
+    <div
+      ref={containerRef}
       className="h-full w-full"
-      zoomControl={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <FitToRadius lat={center.lat} lng={center.lng} radius={radius} />
-      <Circle
-        center={[center.lat, center.lng]}
-        radius={radius * 1000}
-        pathOptions={{
-          color: "#2563eb",
-          weight: 2,
-          fillColor: "#2563eb",
-          fillOpacity: 0.08,
-        }}
-      />
-      <Marker position={[center.lat, center.lng]} icon={userIcon}>
-        <Popup>Tu ubicación</Popup>
-      </Marker>
-      {venues.map((v) => (
-        <Marker key={v.id} position={[v.lat, v.lng]} icon={venueIcon}>
-          <Popup>{v.name}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+      style={{ background: "#e38191" }}
+    />
   );
 }

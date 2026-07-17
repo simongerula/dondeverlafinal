@@ -13,12 +13,12 @@
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
-  background: #fafafa;
-  color: var(--foreground);
+  background: #0b1a2e;
+  color: #e2e8f0;
   font-family: Arial, Helvetica, sans-serif;
 }
 
