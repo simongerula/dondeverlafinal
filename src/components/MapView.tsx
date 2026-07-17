@@ -7,11 +7,13 @@ import type { Venue } from "@/lib/types";
 
 export default function MapView({
   center,
+  zoom,
   venues,
   onCenterChange,
   onVenueClick,
 }: {
   center: { lat: number; lng: number };
+  zoom?: number;
   venues: Venue[];
   onCenterChange?: (center: { lat: number; lng: number }) => void;
   onVenueClick?: (venueId: string) => void;
@@ -65,7 +67,8 @@ export default function MapView({
       return;
     }
     prevCenter.current = center;
-    map.flyTo([center.lat, center.lng], map.getZoom(), { duration: 0.6 });
+    map.flyTo([center.lat, center.lng], zoom ?? map.getZoom(), { duration: 0.6 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [center]);
 
   useEffect(() => {

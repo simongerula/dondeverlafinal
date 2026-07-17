@@ -27,6 +27,7 @@ export default function Home() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loadingVenues, setLoadingVenues] = useState(true);
   const [radius, setRadius] = useState<number>(50);
+  const [mapZoom, setMapZoom] = useState<number | undefined>(undefined);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -64,7 +65,7 @@ export default function Home() {
         body: JSON.stringify({
           p_lat: center.lat,
           p_lng: center.lng,
-          p_radius_m: radius * 1000,
+          p_radius_m: 2000000,
         }),
         signal: controller.signal,
       });
@@ -80,7 +81,7 @@ export default function Home() {
     } finally {
       if (!controller.signal.aborted) setLoadingVenues(false);
     }
-  }, [center, radius]);
+  }, [center]);
 
   const filteredVenues = venues.filter(
     (v) => distanceKm(center, { lat: v.lat, lng: v.lng }) <= radius
@@ -179,8 +180,15 @@ export default function Home() {
   }
 
   function scrollToVenue(venueId: string) {
-    const el = document.getElementById(`venue-${venueId}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const venue = venues.find((v) => v.id === venueId);
+    if (venue && distanceKm(center, { lat: venue.lat, lng: venue.lng }) > radius) {
+      setCenter({ lat: venue.lat, lng: venue.lng });
+      setMapZoom(13);
+      setTimeout(() => setMapZoom(undefined), 700);
+    } else {
+      const el = document.getElementById(`venue-${venueId}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
   }
 
   return (
@@ -194,7 +202,7 @@ export default function Home() {
       <div className="flex flex-col lg:flex-row flex-1 min-h-0">
       {/* Top/left: map + search */}
       <div className="relative h-[40vh] lg:h-full lg:w-3/5 lg:max-w-none shrink-0">
-        <MapView center={center} venues={filteredVenues} onCenterChange={setCenter} onVenueClick={scrollToVenue} />
+        <MapView center={center} zoom={mapZoom} venues={venues} onCenterChange={setCenter} onVenueClick={scrollToVenue} />
 
         {/* Search bar overlay — glassmorphism */}
         <div className="absolute top-0 left-0 right-0 p-3 z-[1000]">
