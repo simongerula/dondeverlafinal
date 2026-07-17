@@ -71,9 +71,13 @@ export default function AddVenueForm({
       setError("El nombre es obligatorio");
       return;
     }
+    if (!address.trim()) {
+      setError("La dirección es obligatoria");
+      return;
+    }
     const finalLoc = geocodedLoc ?? userLoc;
     if (!finalLoc) {
-      setError("Permití la ubicación o buscá una ciudad primero");
+      setError("Buscá una dirección para obtener la ubicación exacta");
       return;
     }
     setSubmitting(true);
@@ -133,7 +137,7 @@ export default function AddVenueForm({
             </label>
             <input
               className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
-              placeholder="Ej: La Bombonera del Barrio"
+              placeholder="Ej: Peña Argentina"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
@@ -154,7 +158,7 @@ export default function AddVenueForm({
 
           <div className="flex flex-col gap-1.5 relative">
             <label className="text-xs font-semibold text-sky-300 uppercase tracking-wide">
-              Dirección
+              Dirección *
             </label>
             <div className="relative">
               <input
@@ -177,11 +181,7 @@ export default function AddVenueForm({
                 Ubicación confirmada
               </div>
             )}
-            {!address && (
-              <p className="text-xs text-slate-500">
-                Si dejás la dirección vacía, se usará tu ubicación actual.
-              </p>
-            )}
+            
             {suggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-1 z-10 bg-[#0a2540] border border-sky-500/40 rounded-xl shadow-xl overflow-hidden max-h-48 overflow-y-auto">
                 {suggestions.map((s, i) => (
