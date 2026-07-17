@@ -86,6 +86,14 @@ export default function Home() {
     (v) => distanceKm(center, { lat: v.lat, lng: v.lng }) <= radius
   );
 
+  // Record page view once per session.
+  useEffect(() => {
+    if (!sessionStorage.getItem("pageview_recorded")) {
+      fetch("/api/pageview", { method: "POST" });
+      sessionStorage.setItem("pageview_recorded", "1");
+    }
+  }, []);
+
   // Run once on mount: load venues and grab geolocation.
   useEffect(() => {
     loadVenues();
