@@ -72,15 +72,11 @@ export default function VenueCard({
           </p>
         )}
         <div className="flex flex-wrap items-center gap-2 mt-auto text-xs">
-          <span
-            className={`px-2.5 py-0.5 rounded-full font-semibold ${
-              venue.price == null
-                ? "bg-emerald-500/20 text-emerald-300"
-                : "bg-amber-400/20 text-amber-300"
-            }`}
-          >
-            {venue.price == null ? "Gratis" : `$${venue.price}`}
-          </span>
+          {venue.price != null && (
+            <span className="px-2.5 py-0.5 rounded-full font-semibold bg-amber-400/20 text-amber-300">
+              ${venue.price}
+            </span>
+          )}
           {venue.requires_booking && (
             <span className="px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-semibold">
               Reserva
