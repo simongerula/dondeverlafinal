@@ -28,13 +28,6 @@ function rateLimitExceeded(
 }
 
 export async function middleware(request: NextRequest) {
-  const hostname = request.nextUrl.hostname;
-  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
-
-  if (!isLocalhost) {
-    return new NextResponse("Not Found", { status: 404 });
-  }
-
   const pathname = request.nextUrl.pathname;
 
   if (pathname.startsWith("/api/")) {
