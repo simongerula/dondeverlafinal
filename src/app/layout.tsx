@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   description: "Encontrá dónde ver la final del Mundial",
 };
 
+export const viewport = {
+  maximumScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -236,7 +236,7 @@ export default function Home() {
                 <path d="m21 21-4.3-4.3" />
               </svg>
               <input
-                className="flex-1 bg-transparent text-sm text-white placeholder-sky-200/60 outline-none"
+                className="flex-1 bg-transparent text-base text-white placeholder-sky-200/60 outline-none"
                 placeholder="Buscar ciudad o barrio…"
                 value={query}
                 onChange={(e) => handleQueryChange(e.target.value)}

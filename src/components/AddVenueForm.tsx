@@ -114,7 +114,7 @@ export default function AddVenueForm({
 
   return (
     <div className="fixed inset-0 z-[2000] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-overlay">
-      <div className="relative w-full sm:max-w-md bg-[#0a2540] rounded-t-3xl sm:rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl ring-1 ring-sky-900/60 animate-sheet">
+      <div className="relative w-full sm:max-w-md bg-[#0a2540] rounded-t-3xl sm:rounded-3xl h-[80vh] overflow-y-auto shadow-2xl ring-1 ring-sky-900/60 animate-sheet">
         {/* Header band */}
         <div className="relative bg-[#08203a] rounded-t-3xl sm:rounded-t-3xl px-5 pt-6 pb-5 border-b border-sky-900/60">
           <h2 className="text-xl font-bold text-white">Sumar un lugar</h2>
@@ -136,7 +136,7 @@ export default function AddVenueForm({
               Nombre del lugar *
             </label>
             <input
-              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
+              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-base text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
               placeholder="Ej: Peña Argentina"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -162,7 +162,7 @@ export default function AddVenueForm({
             </label>
             <div className="relative">
               <input
-                className="w-full border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
+                className="w-full border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-base text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
                 placeholder="Escribí la dirección para obtener ubicación exacta"
                 value={address}
                 onChange={(e) => handleAddressChange(e.target.value)}
@@ -203,7 +203,7 @@ export default function AddVenueForm({
               Foto (opcional)
             </label>
             <input
-              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
+              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-base text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
               placeholder="URL de la imagen"
               value={photoUrl}
               onChange={(e) => setPhotoUrl(e.target.value)}
@@ -215,7 +215,7 @@ export default function AddVenueForm({
               Link del post (opcional)
             </label>
             <input
-              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
+              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-base text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
               placeholder="Facebook, Instagram, web…"
               value={link}
               onChange={(e) => setLink(e.target.value)}
@@ -227,7 +227,7 @@ export default function AddVenueForm({
               Entrada (OPCIONAL)
             </label>
             <input
-              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
+              className="border border-sky-900/60 bg-[#0b1a2e] rounded-xl px-3.5 py-2.5 text-base text-white placeholder-slate-500 outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30 transition"
               placeholder="Precio de entrada? Si es gratis dejá vacío"
               inputMode="decimal"
               value={price}
